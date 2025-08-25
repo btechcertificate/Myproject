@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from common.messaging import rabbitmq_publisher
+# from common.messaging import rabbitmq_publisher
 from rest_framework.views import APIView
 from rest_framework.response import Response
 
