@@ -10,23 +10,30 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
+import environ
+import os
 from pathlib import Path
 from celery.schedules import crontab
 
+env = environ.Env(
+    DEBUG=(bool, False)
+)
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+# reading .env file
+environ.Env.read_env(os.path.join(BASE_DIR, ".env"))
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-zpie0)a5vdc33wt1$hdus_=*1neph4r%(aa31_3b%&v*w1yfoy'
+SECRET_KEY = env("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = env("DEBUG")
 
-ALLOWED_HOSTS = ['13.127.101.184', 'ec2-13-127-101-184.ap-south-1.compute.amazonaws.com', 'localhost', '127.0.0.1']
+ALLOWED_HOSTS = env.list("ALLOWED_HOSTS", default=["*"])
 
 
 # Application definition
@@ -39,6 +46,7 @@ DJANGO_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django_celery_results',
+    'storages',
 ]
 
 
@@ -83,22 +91,27 @@ WSGI_APPLICATION = 'myproject.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
+# Postgres Remote RDS
 # DATABASES = {
 #     'default': {
-#         'ENGINE': 'django.db.backends.postgresql',
-#         'NAME': "myproject_db",
-#         'USER': "postgres",
-#         'PASSWORD': "postgres",
-#         'HOST': "localhost",
-#         'PORT': "5433",
+#         'ENGINE': 'django.db.backends.postgresql',   # or 'mysql'
+#         'NAME': 'postgres',
+#         'USER': 'postgres_user',
+#         'PASSWORD': 'ZtvD7117$',
+#         'HOST': 'database-1.cb862kqgmpgb.ap-south-1.rds.amazonaws.com',
+#         'PORT': '5432',  # or 3306 for MySQL
 #     }
 # }
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / "db.sqlite3",
-    }
+    "default": env.db("DATABASE_URL")  # automatically parses DATABASE_URL
 }
+# SqlLITE
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': BASE_DIR / "db.sqlite3",
+#     }
+# }
 
 
 # Password validation
@@ -169,3 +182,15 @@ CELERY_BEAT_SCHEDULE = {
         "schedule": crontab(minute="*/10"),  # every 10 minutes
     },
 }
+
+AWS_ACCESS_KEY_ID = env("AWS_ACCESS_KEY_ID")
+AWS_SECRET_ACCESS_KEY = env("AWS_SECRET_ACCESS_KEY")
+AWS_STORAGE_BUCKET_NAME = "my-personalproject-bucket"
+AWS_S3_REGION_NAME = "ap-south-1"  # change to your bucket’s region
+AWS_QUERYSTRING_AUTH = False  # so URLs don’t expire immediately
+
+# Default file storage
+DEFAULT_FILE_STORAGE = "storages.backends.s3boto3.S3Boto3Storage"
+
+# Optional: custom domain if using CloudFront/CDN
+AWS_S3_CUSTOM_DOMAIN = f"{AWS_STORAGE_BUCKET_NAME}.s3.amazonaws.com"

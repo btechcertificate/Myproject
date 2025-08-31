@@ -4,6 +4,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 
 import product
+from product.utils import generate_presigned_url
 from .models import Product
 import time
 from django.core.cache import cache
@@ -19,6 +20,18 @@ class ProductView(APIView):
         data = request.data
         product = Product.objects.create(name=data.get("name"))
         return Response(data={"id": product.id, "name": product.name}, status=201)
+    
+
+class ProductDetailView(APIView):
+    def get(self, request, pk):
+        product = Product.objects.get(pk=pk)
+        file_key = product.image.name  # e.g., "products/img1.jpg"
+        url = generate_presigned_url(file_key, expiration=600)  # 10 min
+        return Response({
+            "id": product.id,
+            "name": product.name,
+            "image_url": url
+        })
 
 
 # class ProductRedisView(APIView):
