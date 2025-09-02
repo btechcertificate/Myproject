@@ -11,7 +11,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Copy project
 COPY . .
 
-# Expose Django dev port
+# Expose Django dev port. that a metadata
 EXPOSE 8000
 
 # Start app
