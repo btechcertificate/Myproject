@@ -11,6 +11,9 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Copy project
 COPY . .
 
+# Copy env file
+COPY .env .env
+
 # Expose Django dev port.
 EXPOSE 8000
 
