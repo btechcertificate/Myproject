@@ -35,7 +35,6 @@ DEBUG = env("DEBUG")
 
 ALLOWED_HOSTS = env.list("ALLOWED_HOSTS", default=["*"])
 
-
 # Application definition
 
 DJANGO_APPS = [
