@@ -33,7 +33,7 @@ SECRET_KEY = env("SECRET_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = env("DEBUG")
 
-ALLOWED_HOSTS = ["*",]
+ALLOWED_HOSTS = env.list("ALLOWED_HOSTS", default=["*"])
 
 
 # Application definition
@@ -185,7 +185,7 @@ CELERY_BEAT_SCHEDULE = {
 
 AWS_ACCESS_KEY_ID = env("AWS_ACCESS_KEY_ID")
 AWS_SECRET_ACCESS_KEY = env("AWS_SECRET_ACCESS_KEY")
-AWS_STORAGE_BUCKET_NAME = "my-personalproject-bucket"
+AWS_STORAGE_BUCKET_NAME = "projectfirsts3bucket"
 AWS_S3_REGION_NAME = "ap-south-1"  # change to your bucket’s region
 AWS_QUERYSTRING_AUTH = False  # so URLs don’t expire immediately
 
