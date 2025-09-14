@@ -33,9 +33,6 @@ ENV PATH="/opt/venv/bin:$PATH"
 # Copy project
 COPY . .
 
-# Collect static files (run at build time)
-RUN python manage.py collectstatic --noinput
-
 # Copy Nginx config
 COPY nginx/default.conf /etc/nginx/conf.d/myproject.conf
 
