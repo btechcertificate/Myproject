@@ -33,6 +33,9 @@ ENV PATH="/opt/venv/bin:$PATH"
 # Copy project
 COPY . .
 
+# Copy environment file (optional, if you want to keep it inside container)
+COPY .env .env
+
 # Collect static files (run at build time)
 RUN python manage.py collectstatic --noinput
 
@@ -42,6 +45,8 @@ COPY nginx/default.conf /etc/nginx/conf.d/myproject.conf
 # Expose ports (Nginx runs on 80)
 EXPOSE 80
 
-# Start script (runs Gunicorn + Nginx)
-CMD service nginx start && \
-    gunicorn myproject.wsgi:application --bind 0.0.0.0:8000 --workers 4 --timeout 120
+# Giving permissions to the entrypoint script
+RUN chmod +x /entrypoint.sh
+
+# Use entrypoint (In this script, we start both Gunicorn and Nginx and also loading static files)
+CMD ["/entrypoint.sh"]
