@@ -33,6 +33,10 @@ ENV PATH="/opt/venv/bin:$PATH"
 # Copy project
 COPY . .
 
+# Remove default Nginx configs
+RUN rm /etc/nginx/sites-enabled/default || true
+RUN rm /etc/nginx/conf.d/default.conf || true
+
 # Copy Nginx config
 COPY nginx/default.conf /etc/nginx/conf.d/myproject.conf
 
@@ -43,7 +47,7 @@ EXPOSE 80
 COPY entrypoint.sh /entrypoint.sh
 
 # Giving permissions to the entrypoint script
-RUN chmod +x entrypoint.sh
+RUN chmod +x /entrypoint.sh
 
 # Use entrypoint (In this script, we start both Gunicorn and Nginx and also loading static files)
 CMD ["/entrypoint.sh"]
