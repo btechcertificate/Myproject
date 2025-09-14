@@ -33,9 +33,6 @@ ENV PATH="/opt/venv/bin:$PATH"
 # Copy project
 COPY . .
 
-# Copy environment file (optional, if you want to keep it inside container)
-COPY .env .env
-
 # Collect static files (run at build time)
 RUN python manage.py collectstatic --noinput
 
