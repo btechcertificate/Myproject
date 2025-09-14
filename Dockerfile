@@ -39,8 +39,11 @@ COPY nginx/default.conf /etc/nginx/conf.d/myproject.conf
 # Expose ports (Nginx runs on 80)
 EXPOSE 80
 
+# Copy entrypoint
+COPY entrypoint.sh /entrypoint.sh
+
 # Giving permissions to the entrypoint script
-RUN chmod +x /entrypoint.sh
+RUN chmod +x entrypoint.sh
 
 # Use entrypoint (In this script, we start both Gunicorn and Nginx and also loading static files)
 CMD ["/entrypoint.sh"]
