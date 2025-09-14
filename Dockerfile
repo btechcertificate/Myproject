@@ -3,7 +3,7 @@
 # -------------------------------
 FROM python:3.11-slim as builder
 
-WORKDIR /app
+WORKDIR /myprojectdir
 
 # System dependencies
 RUN apt-get update && apt-get install -y \
@@ -24,7 +24,7 @@ FROM python:3.11-slim
 # Install Nginx
 RUN apt-get update && apt-get install -y nginx && rm -rf /var/lib/apt/lists/*
 
-WORKDIR /app
+WORKDIR /myprojectdir
 
 # Copy virtualenv from builder
 COPY --from=builder /opt/venv /opt/venv
@@ -34,14 +34,14 @@ ENV PATH="/opt/venv/bin:$PATH"
 COPY . .
 
 # Collect static files (run at build time)
-RUN python app/manage.py collectstatic --noinput
+RUN python myprojectdir/manage.py collectstatic --noinput
 
 # Copy Nginx config
-COPY nginx/default.conf /etc/nginx/conf.d/default.conf
+COPY nginx/default.conf /etc/nginx/conf.d/myproject.conf
 
 # Expose ports (Nginx runs on 80)
 EXPOSE 80
 
 # Start script (runs Gunicorn + Nginx)
 CMD service nginx start && \
-    gunicorn app.wsgi:application --bind 0.0.0.0:8000 --workers 4 --timeout 120
+    gunicorn myproject.wsgi:application --bind 0.0.0.0:8000 --workers 4 --timeout 120
