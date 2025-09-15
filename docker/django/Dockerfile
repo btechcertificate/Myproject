@@ -34,10 +34,10 @@ ENV PATH="/opt/venv/bin:$PATH"
 COPY . .
 
 # Copy entrypoint
-COPY entrypoint.sh entrypoint.sh
+COPY docker/django/entrypoint.sh /entrypoint.sh
 
 # Giving permissions to the entrypoint script
 RUN chmod +x entrypoint.sh
 
 # Use entrypoint (In this script, we start both Gunicorn and Nginx and also loading static files)
-ENTRYPOINT ["entrypoint.sh"]
+ENTRYPOINT ["/entrypoint.sh"]
