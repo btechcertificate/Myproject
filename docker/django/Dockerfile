@@ -19,16 +19,16 @@ RUN python -m venv /opt/venv && \
 # -------------------------------
 # Stage 2: Final image with Nginx + Gunicorn
 # -------------------------------
-# FROM python:3.11-slim
+FROM python:3.11-slim
 
-# # Install Nginx
-# RUN apt-get update && apt-get install -y nginx && rm -rf /var/lib/apt/lists/*
+# Install Nginx
+RUN apt-get update && apt-get install -y nginx && rm -rf /var/lib/apt/lists/*
 
-# WORKDIR /myprojectdir
+WORKDIR /myprojectdir
 
-# # Copy virtualenv from builder
-# COPY --from=builder /opt/venv /opt/venv
-# ENV PATH="/opt/venv/bin:$PATH"
+# Copy virtualenv from builder
+COPY --from=builder /opt/venv /opt/venv
+ENV PATH="/opt/venv/bin:$PATH"
 
 # Copy project
 COPY . .
